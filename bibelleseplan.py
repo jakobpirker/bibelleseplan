@@ -8,31 +8,31 @@ book_names = ["1 Mos", "2 Mos", "3 Mos", "4 Mos", "5 Mos", "Jos", "Ri", "Rut", "
 book_lengths = [50, 40, 27, 36, 34, 24, 21, 4, 31, 24, 22, 25, 29, 36, 10, 13, 10, 42, 150, 31, 12, 8, 66, 52, 5, 48, 12, 14, 4, 9, 1, 4, 7, 3, 3, 3, 2, 14, 3, 28, 16, 24, 21, 28, 16, 16, 13, 6, 6, 4, 4, 5, 3, 6, 4, 3, 1, 13, 5, 5, 3, 5, 1, 1, 1, 22]
 
 # user definitions
-chapters = 4
-input = "24.6.1992"
-start = datetime.datetime.strptime(start, format1).date()
+chapters_p_day = 4
+max_lines = 49
+input = "10.1.2017"
+start = datetime.datetime.strptime(input, "%d.%m.%Y").date()
 
 # prepare excel file
 workbook = xlsxwriter.Workbook('hello.xlsx')
 worksheet = workbook.add_worksheet()
  
-prev = 0
+current_chapter = chapters_p_day
+day = 0
  
 for i, book in enumerate(book_names):
-  worksheet.write(i, 0, book)
-  worksheet.write(i, 1, str(book_lengths[i]))
-
+  
+  while current_chapter <= book_lengths[i]:
+    col = int(day/max_lines)
+    line = day - col*max_lines
+    
+    worksheet.write(line, 4*col + 0, (start + datetime.timedelta(days=day)).strftime("%d.%m.%Y"))
+    worksheet.write(line, 4*col + 1, book)
+    worksheet.write(line, 4*col + 2, current_chapter)
+    
+    day = day + 1
+    current_chapter = current_chapter + chapters_p_day
+    
+  current_chapter = current_chapter - book_lengths[i]
+    
 workbook.close()
-
-today = date.today()
-print(today+ datetime.timedelta(days=1))
-
-format1 = "%d.%m.%Y"
-print(datetime.datetime.strptime(start, format1).date())
-
-# workbook = xlsxwriter.Workbook('hello.xlsx')
-# worksheet = workbook.add_worksheet()
-
-# worksheet.write('A1', 'Hello world')
-
-# workbook.close()
