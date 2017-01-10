@@ -1,0 +1,7 @@
+# KNOWN ISSUES/ERRORS:
+
+# FURTHER DEV:
+- code cleanup
+- file naming
+- argument definition & handling
+- formatting of the sheet (borders, number of lines, cell width...)
