@@ -7,4 +7,4 @@
 - argument passing & parsing
 - formatting of the sheet (borders, cell width...)
 
-- user defined ranges (more books simultaneously)
+- user defined ranges (more books simultaneously) -> extend section pattern
