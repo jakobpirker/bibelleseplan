@@ -1,5 +1,9 @@
 from book import Book
 
+COLS_PER_SEC = 2 # columns per section (book-name and chapter)
+
+DATE_FORMAT = "%d.%m.%Y"
+
 # list of all bible-books
 BOOKS = []
 BOOKS.append(Book("1 Mos", 50))
