@@ -1,10 +1,6 @@
 # KNOWN ISSUES/ERRORS:
 
 # FURTHER DEV:
-
-- use object list
-- code cleanup
 - argument passing & parsing
 - formatting of the sheet (borders, cell width...)
-
-- user defined ranges (more books simultaneously) -> extend section pattern
+- (more correct docu)

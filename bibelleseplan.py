@@ -18,10 +18,6 @@ s_date = "23.1.2017"
 start = datetime.datetime.strptime(s_date, DEF.DATE_FORMAT).date()
 sections = Section.parseSections(section_str, chapters_p_day)
 
-# prepare excel file
-workbook = xlsxwriter.Workbook(start.strftime(DEF.DATE_FORMAT) + "_" + section_str.replace(" ", "").replace("-", "_") + ".xlsx")
-worksheet = workbook.add_worksheet()
-
 # duration calculation
 sum_chapters = 0
 sum_chapters_p_day = 0
@@ -32,13 +28,18 @@ for section in sections:
 num_days = int(sum_chapters/sum_chapters_p_day)    
 num_lines = math.ceil((sum_chapters/sum_chapters_p_day)/num_cols)
 
+# prepare excel file
+wb_name = "reading_plan_" + start.strftime(DEF.DATE_FORMAT) + ".xlsx"
+workbook = xlsxwriter.Workbook(wb_name)
+worksheet = workbook.add_worksheet()
+
 day = 0
 s_col = 0 # "start (leftest)" column of a new seperated column-area
 line = 0
 removed_elements = 0
 while day <= num_days:
 
-  worksheet.write(line, s_col, (start + datetime.timedelta(days=day)).strftime("%d.%m.%Y"))
+  worksheet.write(line, s_col, (start + datetime.timedelta(days=day)).strftime(DEF.DATE_FORMAT))
   for i, section in enumerate(sections):
     [book, chapter, remaining_chapters] = section.iterateDay()
     
