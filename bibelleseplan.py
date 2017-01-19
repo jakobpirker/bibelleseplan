@@ -5,46 +5,36 @@ from datetime import date
 import math
 
 from definitions import BOOKS
+from section import Section
 import definitions as DEF
 
-def getSectionBorders(section_str):
+def parseSections(section_str, chapters_p_day):
 
-  # create a list with all abbreviations for the books
-  abbr = []  
-  for book in BOOKS:
-    abbr.append(book.short_name)
+  sections = []
+  for i, section in enumerate(section_str.split(",")):
+    sections.append(Section(section, chapters_p_day[i]))
 
-  sec_ind = []
-  for section in section_str.split(","):
-    section_borders = section.strip().split("-")
-
-    # section must have one book to start and one to end
-    if len(section_borders) != 2:
-      raise ValueError("getSectionBorders: Choosen sections are invalid")
-
-    # 0 ... start index, 1 ... end index
-    sec_ind.append([abbr.index(section_borders[0].strip()), abbr.index(section_borders[1].strip())])
-
-  return sec_ind
+  return sections
  
 COLS_PER_DAY = 4
 
 # user definitions
-chapters_p_day = 1
+chapters_p_day = [1]
 num_cols = 3
 section_str = "1 Mos - Mal"
 s_date = "10.1.2017"
 
 # parse input arguments
 start = datetime.datetime.strptime(s_date, "%d.%m.%Y").date()
-sections = getSectionBorders(section_str)  
+sections = parseSections(section_str, chapters_p_day)  
 
 # prepare excel file
-workbook = xlsxwriter.Workbook(start.strftime("%d.%m.%Y") + "_" + section_str.replace(" ", "") + ".xlsx")
+workbook = xlsxwriter.Workbook(start.strftime("%d.%m.%Y") + "_" + section_str.replace(" ", "").replace("-", "_") + ".xlsx")
 worksheet = workbook.add_worksheet()
  
 # just use selected books
-books = BOOKS[sections[0][0]:sections[0][1] + 1]
+books = BOOKS[sections[0].ind_s:sections[0].ind_e + 1]
+chapters_p_day = chapters_p_day[0]
 
 # column calculations
 sum_chapters = 0
