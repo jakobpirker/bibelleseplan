@@ -8,57 +8,49 @@ from definitions import BOOKS
 from section import Section
 import definitions as DEF
 
-def parseSections(section_str, chapters_p_day):
-
-  sections = []
-  for i, section in enumerate(section_str.split(",")):
-    sections.append(Section(section, chapters_p_day[i]))
-
-  return sections
- 
 COLS_PER_DAY = 4
 
 # user definitions
-chapters_p_day = [1]
+chapters_p_day = [1, 3]
 num_cols = 3
-section_str = "1 Mos - Mal"
+section_str = "Mt - Offb, 1 Mos - Mal"
 s_date = "10.1.2017"
 
 # parse input arguments
 start = datetime.datetime.strptime(s_date, "%d.%m.%Y").date()
-sections = parseSections(section_str, chapters_p_day)  
+sections = Section.parseSections(section_str, chapters_p_day)
 
 # prepare excel file
 workbook = xlsxwriter.Workbook(start.strftime("%d.%m.%Y") + "_" + section_str.replace(" ", "").replace("-", "_") + ".xlsx")
 worksheet = workbook.add_worksheet()
- 
-# just use selected books
-books = BOOKS[sections[0].ind_s:sections[0].ind_e + 1]
-chapters_p_day = chapters_p_day[0]
 
-# column calculations
+# duration calculation
 sum_chapters = 0
-for book in books:
-  sum_chapters = sum_chapters + book.length
-  
-num_lines = int(math.ceil((sum_chapters/chapters_p_day)/num_cols))
+sum_chapters_p_day = 0
+for section in sections:
+  sum_chapters += section.sum_chapters
+  sum_chapters_p_day += section.chapters_p_d
 
-current_chapter = chapters_p_day
+num_days = int(sum_chapters/sum_chapters_p_day)    
+num_lines = math.ceil((sum_chapters/sum_chapters_p_day)/num_cols)
+
 day = 0
+while day <= num_days:
 
-for book in books:
-  
-  while current_chapter <= book.length:
-    col = int(day/num_lines)
-    line = day - col*num_lines
+  worksheet.write(day, 0, (start + datetime.timedelta(days=day)).strftime("%d.%m.%Y"))
+  for i, section in enumerate(sections):
+    [book, chapter, remaining_chapters] = section.iterateDay()
     
-    worksheet.write(line, COLS_PER_DAY*col + 0, (start + datetime.timedelta(days=day)).strftime("%d.%m.%Y"))
-    worksheet.write(line, COLS_PER_DAY*col + 1, book.short_name)
-    worksheet.write(line, COLS_PER_DAY*col + 2, current_chapter)
+    worksheet.write(day, 1 + i*2, book)
+    worksheet.write(day, 2 + i*2, chapter)
     
-    day = day + 1
-    current_chapter = current_chapter + chapters_p_day
+    # section is finished
+    if remaining_chapters and len(sections) > 1:
+      sections.remove(section)
+      
+      # add free chapters to section with longest duration (list is sorted!)
+      sections[0].addRestFromFinishedSection(remaining_chapters, section.chapters_p_d)
     
-  current_chapter = current_chapter - book.length
-    
+  day = day + 1
+
 workbook.close()
