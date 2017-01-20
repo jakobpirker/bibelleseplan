@@ -1,6 +1,5 @@
 # KNOWN ISSUES/ERRORS:
 
 # FURTHER DEV:
-- argument passing & parsing
 - formatting of the sheet (borders, cell width...)
 - (more correct docu)
