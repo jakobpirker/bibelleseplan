@@ -15,7 +15,7 @@ parser = argparse.ArgumentParser(description="Create a bible reading plan, based
 parser.add_argument('-sec', nargs=1, type=str,
   help = "list of the sections that should be used, e.g. '1 Mos - Mal, Mt - Offb' for book names see definitions.py")
 parser.add_argument('-ch', nargs=1, type=str,
-  help = "list of the numbers of chapters a day for a specific, according to the order given in -s, e.g. '1 3'")
+  help = "list of the numbers of chapters a day for a specific section, according to the order given in -sec, e.g. '1 3'")
 parser.add_argument('-d', nargs=1, type=str, help = "starting date, e.g. '17.1.2017'")
 parser.add_argument('-col', nargs=1, type=int, help = "number of columns the excel file should have")
 
